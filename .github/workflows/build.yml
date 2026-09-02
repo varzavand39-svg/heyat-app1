@@ -24,11 +24,18 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Generate Android Files
+      - name: Generate Android Config
         run: |
+          # پشتیبان‌گیری از فایل‌های اختصاصی شما
+          cp pubspec.yaml pubspec.yaml.bak
           cp lib/main.dart lib/main.dart.bak
-          flutter create . --platforms=android --org com.shohadaamameh.heyat
-          mv lib/main.dart.bak lib/main.dart
+
+          # ایجاد زیرساخت اندروید با نام استاندارد بدون خط تیره
+          flutter create . --project-name heyat_app --platforms=android --org com.shohadaamameh.heyat
+
+          # بازگردانی فایل‌های اصلی هیئت
+          cp pubspec.yaml.bak pubspec.yaml
+          cp lib/main.dart.bak lib/main.dart
 
       - name: Install Dependencies
         run: flutter pub get
