@@ -1,0 +1,19 @@
+name: heyat_app
+description: هیئت مجاهدین حسینی شهدای امامه
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  http: ^1.2.1
+  shared_preferences: ^2.2.3
+  url_launcher: ^6.3.0
+
+flutter:
+  uses-material-design: true
