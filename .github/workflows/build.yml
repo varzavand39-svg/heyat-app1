@@ -24,24 +24,22 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Build Project
+      - name: Build APK
         run: |
-          # ساخت پروژه تمیز و استاندارد
-          flutter create release_app --org com.shohadaamameh.heyat
-          cd release_app
+          # ساخت زیرساخت تمیز اندروید بدون مشکل نام‌گذاری مخزن
+          flutter create heyat_app --org com.shohadaamameh.heyat
+          cd heyat_app
 
-          # نصب خودکار بسته‌ها بدون تداخل نسخه
-          flutter pub add flutter_localizations --sdk=flutter
-          flutter pub add intl http shared_preferences url_launcher
-
-          # جایگذاری کد اختصاصی هیئت
+          # انتقال فایل‌های اصلی شما به پروژه
+          cp $GITHUB_WORKSPACE/pubspec.yaml ./pubspec.yaml
           cp $GITHUB_WORKSPACE/lib/main.dart lib/main.dart
 
-          # ساخت مستقیم APK
+          # دانلود وابستگی‌ها و کامپایل فایل نصبی
+          flutter pub get
           flutter build apk --release
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Heyat-App-Release
-          path: release_app/build/app/outputs/flutter-apk/app-release.apk
+          path: heyat_app/build/app/outputs/flutter-apk/app-release.apk
