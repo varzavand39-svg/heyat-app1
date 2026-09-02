@@ -22,15 +22,19 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.19.6'
           channel: 'stable'
+
+      - name: Accept Android Licenses
+        run: yes "y" | flutter doctor --android-licenses || true
 
       - name: Build APK Cleanly
         run: |
-          # ساخت یک پروژه استاندارد جدید در پوشه موقت
+          # ساخت پروژه استاندارد فلاتر
           flutter create myapp --org com.shohadaamameh.heyat
           cd myapp
 
-          # جایگذاری فایل‌های اصلی و تاییدشده شما
+          # جایگذاری فایل‌های شما
           cp $GITHUB_WORKSPACE/pubspec.yaml ./pubspec.yaml
           cp $GITHUB_WORKSPACE/lib/main.dart lib/main.dart
 
