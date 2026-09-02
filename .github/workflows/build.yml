@@ -1,3 +1,4 @@
+shohadaamameh, [9/2/2026 04:53 PM]
 name: Build Android APK
 
 on:
@@ -47,3 +48,58 @@ jobs:
         with:
           name: Heyat-App-Release
           path: myapp/build/app/outputs/flutter-apk/app-release.apk
+
+shohadaamameh, [9/2/2026 04:59 PM]
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.6'
+          channel: 'stable'
+
+      - name: Initialize Android Structure
+        run: |
+          # پشتیبان‌گیری از فایل‌های شما
+          cp pubspec.yaml pubspec.yaml.bak
+          cp lib/main.dart lib/main.dart.bak
+
+          # ساخت پلتفرم اندروید در همین پوشه با کلید force
+          flutter create . --force --org com.shohadaamameh.heyat
+
+          # بازگردانی فایل‌های اصلی هیئت
+          cp pubspec.yaml.bak pubspec.yaml
+          cp lib/main.dart.bak lib/main.dart
+
+      - name: Accept Android Licenses
+        run: yes "y" | flutter doctor --android-licenses || true
+
+      - name: Build APK
+        run: |
+          flutter pub get
+          flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Heyat-App-Release
+          path: build/app/outputs/flutter-apk/app-release.apk
