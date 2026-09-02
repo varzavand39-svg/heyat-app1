@@ -24,22 +24,24 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Setup Android Project
+      - name: Build Project
         run: |
-          # ساخت پروژه موقت با نام استاندارد و بدون خط تیره
-          flutter create temp_app --platforms=android --org com.shohadaamameh.heyat
-          # انتقال پوشه اندروید به پروژه اصلی
-          cp -r temp_app/android ./
-          rm -rf temp_app
+          # ساخت پروژه تمیز و استاندارد
+          flutter create release_app --org com.shohadaamameh.heyat
+          cd release_app
 
-      - name: Install Dependencies
-        run: flutter pub get
+          # نصب خودکار بسته‌ها بدون تداخل نسخه
+          flutter pub add flutter_localizations --sdk=flutter
+          flutter pub add intl http shared_preferences url_launcher
 
-      - name: Build APK
-        run: flutter build apk --release
+          # جایگذاری کد اختصاصی هیئت
+          cp $GITHUB_WORKSPACE/lib/main.dart lib/main.dart
+
+          # ساخت مستقیم APK
+          flutter build apk --release
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Heyat-App-Release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: release_app/build/app/outputs/flutter-apk/app-release.apk
