@@ -24,11 +24,22 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Accept Android Licenses
-        run: yes "y" | flutter doctor --android-licenses || true
+      - name: Build APK Cleanly
+        run: |
+          # ساخت یک پروژه استاندارد جدید در پوشه موقت
+          flutter create myapp --org com.shohadaamameh.heyat
+          cd myapp
 
-      - name: Install Dependencies
-        run: flutter pub get
+          # جایگذاری فایل‌های اصلی و تاییدشده شما
+          cp $GITHUB_WORKSPACE/pubspec.yaml ./pubspec.yaml
+          cp $GITHUB_WORKSPACE/lib/main.dart lib/main.dart
 
-      - name: Build APK
-        run: flutter build apk --release --verbose
+          # دریافت پکیج‌ها و ساخت فایل نصبی
+          flutter pub get
+          flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Heyat-App-Release
+          path: myapp/build/app/outputs/flutter-apk/app-release.apk
