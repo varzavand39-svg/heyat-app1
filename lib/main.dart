@@ -1,4 +1,4 @@
-shohadaamameh, [9/2/2026 02:38 PM]
+shohadaamameh, [9/2/2026 03:13 PM]
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// آدرس اختصاصی مخزن شما:
-const String dataUrl = 'https://raw.githubusercontent.com/Varzavand39-svg/heyat-app/main/data.json';
+// آدرس اختصاصی دیتابیس هیئت شما
+const String dataUrl = 'https://raw.githubusercontent.com/Varzavand-svg/heyat-app1/main/data.json';
 
 void main() {
   runApp(const HeyatApp());
@@ -31,12 +31,12 @@ class HeyatApp extends StatelessWidget {
       ],
       theme: ThemeData(
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFFF6F8F7),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF1B4332),
           primary: const Color(0xFF1B4332),
           secondary: const Color(0xFFC9A227),
           surface: Colors.white,
-          background: const Color(0xFFF6F8F7),
         ),
       ),
       home: const MainNavigationScreen(),
@@ -116,10 +116,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 child: const Text('بعداً'),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
 
-shohadaamameh, [9/2/2026 02:38 PM]
-),
+shohadaamameh, [9/2/2026 03:13 PM]
+style: TextStyle(fontSize: 12, height: 1.5),
+            ),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
@@ -193,7 +193,7 @@ shohadaamameh, [9/2/2026 02:38 PM]
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
+              gradient: const linearGradient(
                 colors: [Color(0xFF1B4332), Color(0xFF2D6A4F)],
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
@@ -214,8 +214,97 @@ shohadaamameh, [9/2/2026 02:38 PM]
                     ),
                     Text(featured['date'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
 
-shohadaamameh, [9/2/2026 02:38 PM]
-onPressed: () {
+shohadaamameh, [9/2/2026 03:13 PM]
+],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.white24,
+                      backgroundImage: NetworkImage(featured['photo_url'] ?? ''),
+                      onBackgroundImageError: (_, __) {},
+                      child: (featured['photo_url'] == null || featured['photo_url'].isEmpty)
+                          ? const Icon(Icons.person, color: Colors.white)
+                          : null,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(featured['name'] ?? '', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                          Text(featured['operation'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text('«${featured['will'] ?? ''}»', style: const TextStyle(color: Colors.white, fontSize: 12, fontStyle: FontStyle.italic)),
+              ],
+            ),
+          ),
+        const SizedBox(height: 14),
+        if (event != null)
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.campaign, color: Color(0xFFC9A227)),
+                      const SizedBox(width: 8),
+                      Text(event['title'] ?? 'مراسم پیش‌رو', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    ],
+                  ),
+                  const Divider(height: 16),
+                  Text('🎤 سخنران: ${event['speaker']}', style: const TextStyle(fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Text('🏴 مداح: ${event['eulogist']}', style: const TextStyle(fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Text('⏰ زمان: ${event['date_time']}', style: const TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+          ),
+        const SizedBox(height: 14),
+        const Text('امکانات و خدمات هیئت', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 10),
+        GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          children: [
+            _quickTile(Icons.favorite_border, 'التماس دعا', () => _showPrayerRequestDialog(context)),
+            _quickTile(Icons.touch_app, 'صلوات‌شمار', () => onNavigate(3)),
+            _quickTile(Icons.auto_stories, 'ادعیه هیئت', () => onNavigate(2)),
+            _quickTile(Icons.military_tech, 'یادمان شهدا', () => onNavigate(1)),
+            _quickTile(Icons.volunteer_activism, 'نذورات', () => onNavigate(4)),
+            _quickTile(Icons.live_tv, 'پخش آنلاین', () => openUrl(data?['media']?['live_stream_url'] ?? 'https://aparat.com')),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _prayerBadge(String name, String time) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(color: const Color(0xFFF0F4F2), borderRadius: BorderRadius.circular(6)),
+      child: Text('$name: $time', style: const TextStyle(fontSize: 10, color: Color(0xFF1B4332), fontWeight: FontWeight.bold)),
+    );
+  }
+
+shohadaamameh, [9/2/2026 03:13 PM]
+style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
+                onPressed: () {
                   _openUrl(appInfo['download_url'] ?? '');
                   Navigator.pop(ctx);
                 },
@@ -321,97 +410,8 @@ class HomeDashboard extends StatelessWidget {
           children: [
             const Text(
               'نام بیمار، درگذشتگان یا نیت معنوی خود را بنویسید تا در پایان جلسه هفتگی قرائت و دعا شود:',
-              style: TextStyle(fontSize: 12, height: 1.5),
 
-shohadaamameh, [9/2/2026 02:38 PM]
-],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: Colors.white24,
-                      backgroundImage: NetworkImage(featured['photo_url'] ?? ''),
-                      onBackgroundImageError: (_, __) {},
-                      child: (featured['photo_url'] == null || featured['photo_url'].isEmpty)
-                          ? const Icon(Icons.person, color: Colors.white)
-                          : null,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(featured['name'] ?? '', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                          Text(featured['operation'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text('«${featured['will'] ?? ''}»', style: const TextStyle(color: Colors.white, fontSize: 12, fontStyle: FontStyle.italic)),
-              ],
-            ),
-          ),
-        const SizedBox(height: 14),
-        if (event != null)
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.campaign, color: Color(0xFFC9A227)),
-                      const SizedBox(width: 8),
-                      Text(event['title'] ?? 'مراسم پیش‌رو', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                    ],
-                  ),
-                  const Divider(height: 16),
-                  Text('🎤 سخنران: ${event['speaker']}', style: const TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Text('🏴 مداح: ${event['eulogist']}', style: const TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Text('⏰ زمان: ${event['date_time']}', style: const TextStyle(fontSize: 12)),
-                ],
-              ),
-            ),
-          ),
-        const SizedBox(height: 14),
-        const Text('امکانات و خدمات هیئت', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: [
-            _quickTile(Icons.favorite_border, 'التماس دعا', () => _showPrayerRequestDialog(context)),
-            _quickTile(Icons.touch_app, 'صلوات‌شمار', () => onNavigate(3)),
-            _quickTile(Icons.auto_stories, 'ادعیه هیئت', () => onNavigate(2)),
-            _quickTile(Icons.military_tech, 'یادمان شهدا', () => onNavigate(1)),
-            _quickTile(Icons.volunteer_activism, 'نذورات', () => onNavigate(4)),
-            _quickTile(Icons.live_tv, 'پخش آنلاین', () => openUrl(data?['media']?['live_stream_url'] ?? 'https://aparat.com')),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _prayerBadge(String name, String time) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      decoration: BoxDecoration(color: const Color(0xFFF0F4F2), borderRadius: BorderRadius.circular(6)),
-      child: Text('$name: $time', style: const TextStyle(fontSize: 10, color: Color(0xFF1B4332), fontWeight: FontWeight.bold)),
-    );
-  }
-
-shohadaamameh, [9/2/2026 02:38 PM]
+shohadaamameh, [9/2/2026 03:13 PM]
 Widget _quickTile(IconData icon, String title, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
@@ -526,7 +526,7 @@ class _SalawatCounterScreenState extends State<SalawatCounterScreen> {
     final total = base + _count;
     final progress = (total / target).clamp(0.0, 1.0);
 
-shohadaamameh, [9/2/2026 02:38 PM]
+shohadaamameh, [9/2/2026 03:13 PM]
 margin: const EdgeInsets.only(bottom: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: ListTile(
@@ -609,7 +609,7 @@ class MoreMenuScreen extends StatelessWidget {
   }
 }
 
-shohadaamameh, [9/2/2026 02:38 PM]
+shohadaamameh, [9/2/2026 03:13 PM]
 return ListView(
       padding: const EdgeInsets.all(20),
       children: [
