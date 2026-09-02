@@ -24,6 +24,12 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Generate Android Files
+        run: |
+          cp lib/main.dart lib/main.dart.bak
+          flutter create . --platforms=android --org com.shohadaamameh.heyat
+          mv lib/main.dart.bak lib/main.dart
+
       - name: Install Dependencies
         run: flutter pub get
 
