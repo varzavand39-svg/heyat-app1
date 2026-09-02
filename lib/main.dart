@@ -1,4 +1,4 @@
-shohadaamameh, [9/2/2026 03:13 PM]
+shohadaamameh, [9/2/2026 03:29 PM]
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// آدرس اختصاصی دیتابیس هیئت شما
 const String dataUrl = 'https://raw.githubusercontent.com/Varzavand-svg/heyat-app1/main/data.json';
 
 void main() {
@@ -67,10 +66,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final prefs = await SharedPreferences.getInstance();
     final cached = prefs.getString('heyat_full_cache');
     if (cached != null) {
-      setState(() {
-        _data = jsonDecode(cached);
-        _isLoading = false;
-      });
+      try {
+        setState(() {
+          _data = jsonDecode(cached);
+          _isLoading = false;
+        });
+      } catch (_) {}
     }
 
     try {
@@ -117,192 +118,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               ),
               ElevatedButton(
 
-shohadaamameh, [9/2/2026 03:13 PM]
-style: TextStyle(fontSize: 12, height: 1.5),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'متن التماس دعا یا نام مورد نظر...',
-                filled: true,
-                fillColor: Colors.grey.shade100,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('انصراف')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
-            onPressed: () {
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('نیت شما با موفقیت ثبت شد.')),
-              );
-            },
-            child: const Text('ثبت نیت'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final pt = data?['prayer_times'] ?? {};
-    final featured = data?['featured_martyr'] ?? {};
-    final event = (data?['events'] as List? ?? []).isNotEmpty ? data!['events'][0] : null;
-
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFF1B4332).withOpacity(0.12)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Icon(Icons.mosque, size: 20, color: Color(0xFF1B4332)),
-                  const SizedBox(width: 6),
-                  Text(pt['location'] ?? 'اوقات شرعی امامه', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              Row(
-                children: [
-                  _prayerBadge('صبح', pt['fajr'] ?? '--:--'),
-                  const SizedBox(width: 8),
-                  _prayerBadge('ظهر', pt['dhuhr'] ?? '--:--'),
-                  const SizedBox(width: 8),
-                  _prayerBadge('مغرب', pt['maghrib'] ?? '--:--'),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
-        if (featured.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              gradient: const linearGradient(
-                colors: [Color(0xFF1B4332), Color(0xFF2D6A4F)],
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFC9A227), width: 1.2),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(color: const Color(0xFFC9A227), borderRadius: BorderRadius.circular(8)),
-                      child: const Text('شهید شاخص هفته', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    ),
-                    Text(featured['date'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
-
-shohadaamameh, [9/2/2026 03:13 PM]
-],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: Colors.white24,
-                      backgroundImage: NetworkImage(featured['photo_url'] ?? ''),
-                      onBackgroundImageError: (_, __) {},
-                      child: (featured['photo_url'] == null || featured['photo_url'].isEmpty)
-                          ? const Icon(Icons.person, color: Colors.white)
-                          : null,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(featured['name'] ?? '', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-                          Text(featured['operation'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text('«${featured['will'] ?? ''}»', style: const TextStyle(color: Colors.white, fontSize: 12, fontStyle: FontStyle.italic)),
-              ],
-            ),
-          ),
-        const SizedBox(height: 14),
-        if (event != null)
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.campaign, color: Color(0xFFC9A227)),
-                      const SizedBox(width: 8),
-                      Text(event['title'] ?? 'مراسم پیش‌رو', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                    ],
-                  ),
-                  const Divider(height: 16),
-                  Text('🎤 سخنران: ${event['speaker']}', style: const TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Text('🏴 مداح: ${event['eulogist']}', style: const TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Text('⏰ زمان: ${event['date_time']}', style: const TextStyle(fontSize: 12)),
-                ],
-              ),
-            ),
-          ),
-        const SizedBox(height: 14),
-        const Text('امکانات و خدمات هیئت', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: [
-            _quickTile(Icons.favorite_border, 'التماس دعا', () => _showPrayerRequestDialog(context)),
-            _quickTile(Icons.touch_app, 'صلوات‌شمار', () => onNavigate(3)),
-            _quickTile(Icons.auto_stories, 'ادعیه هیئت', () => onNavigate(2)),
-            _quickTile(Icons.military_tech, 'یادمان شهدا', () => onNavigate(1)),
-            _quickTile(Icons.volunteer_activism, 'نذورات', () => onNavigate(4)),
-            _quickTile(Icons.live_tv, 'پخش آنلاین', () => openUrl(data?['media']?['live_stream_url'] ?? 'https://aparat.com')),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _prayerBadge(String name, String time) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      decoration: BoxDecoration(color: const Color(0xFFF0F4F2), borderRadius: BorderRadius.circular(6)),
-      child: Text('$name: $time', style: const TextStyle(fontSize: 10, color: Color(0xFF1B4332), fontWeight: FontWeight.bold)),
-    );
-  }
-
-shohadaamameh, [9/2/2026 03:13 PM]
+shohadaamameh, [9/2/2026 03:29 PM]
 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
                 onPressed: () {
                   _openUrl(appInfo['download_url'] ?? '');
@@ -411,21 +227,206 @@ class HomeDashboard extends StatelessWidget {
             const Text(
               'نام بیمار، درگذشتگان یا نیت معنوی خود را بنویسید تا در پایان جلسه هفتگی قرائت و دعا شود:',
 
-shohadaamameh, [9/2/2026 03:13 PM]
+shohadaamameh, [9/2/2026 03:29 PM]
+style: TextStyle(fontSize: 12, height: 1.5),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: 'متن التماس دعا یا نام مورد نظر...',
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('انصراف')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
+            onPressed: () {
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('نیت شما با موفقیت ثبت شد.')),
+              );
+            },
+            child: const Text('ثبت نیت'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pt = data?['prayer_times'] ?? {};
+    final featured = data?['featured_martyr'] ?? {};
+    final event = (data?['events'] as List? ?? []).isNotEmpty ? data!['events'][0] : null;
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0x1F1B4332)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.mosque, size: 20, color: Color(0xFF1B4332)),
+                  const SizedBox(width: 6),
+                  Text(pt['location'] ?? 'اوقات شرعی امامه', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              Row(
+                children: [
+                  _prayerBadge('صبح', pt['fajr'] ?? '--:--'),
+                  const SizedBox(width: 8),
+                  _prayerBadge('ظهر', pt['dhuhr'] ?? '--:--'),
+                  const SizedBox(width: 8),
+                  _prayerBadge('مغرب', pt['maghrib'] ?? '--:--'),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        if (featured.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1B4332), Color(0xFF2D6A4F)],
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFC9A227), width: 1.2),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(color: const Color(0xFFC9A227), borderRadius: BorderRadius.circular(8)),
+                      child: const Text('شهید شاخص هفته', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    ),
+                    Text(featured['date'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+
+shohadaamameh, [9/2/2026 03:29 PM]
+],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.white24,
+                      backgroundImage: NetworkImage(featured['photo_url'] ?? ''),
+                      onBackgroundImageError: (_, __) {},
+                      child: (featured['photo_url'] == null || featured['photo_url'].isEmpty)
+                          ? const Icon(Icons.person, color: Colors.white)
+                          : null,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(featured['name'] ?? '', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+                          Text(featured['operation'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text('«${featured['will'] ?? ''}»', style: const TextStyle(color: Colors.white, fontSize: 12, fontStyle: FontStyle.italic)),
+              ],
+            ),
+          ),
+        const SizedBox(height: 14),
+        if (event != null)
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.campaign, color: Color(0xFFC9A227)),
+                      const SizedBox(width: 8),
+                      Text(event['title'] ?? 'مراسم پیش‌رو', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    ],
+                  ),
+                  const Divider(height: 16),
+                  Text('🎤 سخنران: ${event['speaker']}', style: const TextStyle(fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Text('🏴 مداح: ${event['eulogist']}', style: const TextStyle(fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Text('⏰ زمان: ${event['date_time']}', style: const TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+          ),
+        const SizedBox(height: 14),
+        const Text('امکانات و خدمات هیئت', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 10),
+        GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          children: [
+            _quickTile(Icons.favorite_border, 'التماس دعا', () => _showPrayerRequestDialog(context)),
+            _quickTile(Icons.touch_app, 'صلوات‌شمار', () => onNavigate(3)),
+            _quickTile(Icons.auto_stories, 'ادعیه هیئت', () => onNavigate(2)),
+            _quickTile(Icons.military_tech, 'یادمان شهدا', () => onNavigate(1)),
+            _quickTile(Icons.volunteer_activism, 'نذورات', () => onNavigate(4)),
+            _quickTile(Icons.live_tv, 'پخش آنلاین', () => openUrl(data?['media']?['live_stream_url'] ?? 'https://aparat.com')),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _prayerBadge(String name, String time) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(color: const Color(0xFFF0F4F2), borderRadius: BorderRadius.circular(6)),
+      child: Text('$name: $time', style: const TextStyle(fontSize: 10, color: Color(0xFF1B4332), fontWeight: FontWeight.bold)),
+    );
+  }
+
+shohadaamameh, [9/2/2026 03:29 PM]
 Widget _quickTile(IconData icon, String title, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4)],
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          boxShadow: [BoxShadow(color: Color(0x08000000), blurRadius: 4)],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(backgroundColor: const Color(0xFF1B4332).withOpacity(0.08), child: Icon(icon, color: const Color(0xFF1B4332), size: 20)),
+            CircleAvatar(backgroundColor: const Color(0x141B4332), child: Icon(icon, color: const Color(0xFF1B4332), size: 20)),
             const SizedBox(height: 6),
             Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
           ],
@@ -460,7 +461,7 @@ class PrayersScreen extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: const Color(0xFF1B4332).withOpacity(0.04), borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: const Color(0x0A1B4332), borderRadius: BorderRadius.circular(10)),
                       child: Text(
                         p['arabic'] ?? '',
                         textAlign: TextAlign.center,
@@ -526,13 +527,113 @@ class _SalawatCounterScreenState extends State<SalawatCounterScreen> {
     final total = base + _count;
     final progress = (total / target).clamp(0.0, 1.0);
 
-shohadaamameh, [9/2/2026 03:13 PM]
-margin: const EdgeInsets.only(bottom: 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+shohadaamameh, [9/2/2026 03:29 PM]
+return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          color: const Color(0xFF1B4332),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Text(
+                  widget.pledgeData['title'] ?? 'نذر جمعی صلوات شهدای امامه',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+                const SizedBox(height: 14),
+                LinearProgressIndicator(value: progress, minHeight: 8, color: const Color(0xFFC9A227), backgroundColor: Colors.white24),
+                const SizedBox(height: 8),
+                Text('$total صلوات از نذر $target', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 30),
+        Center(
+          child: InkWell(
+            onTap: _increment,
+            borderRadius: BorderRadius.circular(120),
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(colors: [Color(0xFF1B4332), Color(0xFF2D6A4F)]),
+                boxShadow: [BoxShadow(color: Color(0x4D1B4332), blurRadius: 16, offset: Offset(0, 8))],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('اللهم صل علی محمد و آل محمد', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFFC9A227), fontSize: 11)),
+                  const SizedBox(height: 8),
+                  Text('$_count', style: const TextStyle(color: Colors.white, fontSize: 44, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4),
+                  const Text('لمس کنید', style: TextStyle(color: Colors.white60, fontSize: 11)),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Center(
+          child: TextButton.icon(
+            onPressed: _reset,
+            icon: const Icon(Icons.refresh, color: Colors.grey),
+            label: const Text('صفر کردن شمارش شخصی', style: TextStyle(color: Colors.grey, fontSize: 12)),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class MartyrsScreen extends StatefulWidget {
+  final List martyrs;
+  const MartyrsScreen({super.key, required this.martyrs});
+
+  @override
+  State<MartyrsScreen> createState() => _MartyrsScreenState();
+}
+
+class _MartyrsScreenState extends State<MartyrsScreen> {
+  String _q = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final list = widget.martyrs.where((m) => (m['name'] ?? '').toString().contains(_q)).toList();
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(14),
+          child: TextField(
+            onChanged: (v) => setState(() => _q = v),
+            decoration: InputDecoration(
+              hintText: 'جستجوی نام شهید...',
+              prefixIcon: const Icon(Icons.search, color: Color(0xFF1B4332)),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            itemCount: list.length,
+            itemBuilder: (ctx, i) {
+              final m = list[i];
+              return Card(
+                margin: const EdgeInsets.only(bottom: 10),
+
+shohadaamameh, [9/2/2026 03:29 PM]
+shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: const Color(0xFF1B4332).withOpacity(0.1),
-                    child: const Icon(Icons.person, color: Color(0xFF1B4332)),
+                  leading: const CircleAvatar(
+                    backgroundColor: Color(0x1A1B4332),
+                    child: Icon(Icons.person, color: Color(0xFF1B4332)),
                   ),
                   title: Text(m['name'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   subtitle: Text('شهادت: ${m['martyrdom_date']} | ${m['operation']}', style: const TextStyle(fontSize: 11)),
@@ -608,103 +709,3 @@ class MoreMenuScreen extends StatelessWidget {
     );
   }
 }
-
-shohadaamameh, [9/2/2026 03:13 PM]
-return ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          color: const Color(0xFF1B4332),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Text(
-                  widget.pledgeData['title'] ?? 'نذر جمعی صلوات شهدای امامه',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-                ),
-                const SizedBox(height: 14),
-                LinearProgressIndicator(value: progress, minHeight: 8, color: const Color(0xFFC9A227), backgroundColor: Colors.white24),
-                const SizedBox(height: 8),
-                Text('$total صلوات از نذر $target', style: const TextStyle(color: Colors.white70, fontSize: 12)),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 30),
-        Center(
-          child: InkWell(
-            onTap: _increment,
-            borderRadius: BorderRadius.circular(120),
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(colors: [Color(0xFF1B4332), Color(0xFF2D6A4F)]),
-                boxShadow: [BoxShadow(color: const Color(0xFF1B4332).withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 8))],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('اللهم صل علی محمد و آل محمد', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFFC9A227), fontSize: 11)),
-                  const SizedBox(height: 8),
-                  Text('$_count', style: const TextStyle(color: Colors.white, fontSize: 44, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  const Text('لمس کنید', style: TextStyle(color: Colors.white60, fontSize: 11)),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-        Center(
-          child: TextButton.icon(
-            onPressed: _reset,
-            icon: const Icon(Icons.refresh, color: Colors.grey),
-            label: const Text('صفر کردن شمارش شخصی', style: TextStyle(color: Colors.grey, fontSize: 12)),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class MartyrsScreen extends StatefulWidget {
-  final List martyrs;
-  const MartyrsScreen({super.key, required this.martyrs});
-
-  @override
-  State<MartyrsScreen> createState() => _MartyrsScreenState();
-}
-
-class _MartyrsScreenState extends State<MartyrsScreen> {
-  String _q = '';
-
-  @override
-  Widget build(BuildContext context) {
-    final list = widget.martyrs.where((m) => (m['name'] ?? '').toString().contains(_q)).toList();
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(14),
-          child: TextField(
-            onChanged: (v) => setState(() => _q = v),
-            decoration: InputDecoration(
-              hintText: 'جستجوی نام شهید...',
-              prefixIcon: const Icon(Icons.search, color: Color(0xFF1B4332)),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-            ),
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            itemCount: list.length,
-            itemBuilder: (ctx, i) {
-              final m = list[i];
-              return Card(
