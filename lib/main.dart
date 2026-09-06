@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +32,7 @@ theme: ThemeData(
 useMaterial3: true,
 scaffoldBackgroundColor: const Color(0xFFF6F8F7),
 colorScheme: ColorScheme.fromSeed(
+
 seedColor: const Color(0xFF1B4332),
 primary: const Color(0xFF1B4332),
 secondary: const Color(0xFFC9A227),
@@ -67,6 +69,7 @@ final cached = prefs.getString('heyat_full_cache');
 if (cached != null) {
 try {
 setState(() {
+
 _data = jsonDecode(cached);
 isLoading = false;
 });
@@ -83,6 +86,7 @@ _data = decoded;
 _isLoading = false;
 });
 checkAppUpdate(decoded['app_info']);
+
 }
 } catch () {
 setState(() => _isLoading = false);
@@ -99,6 +103,7 @@ context: context,
 barrierDismissible: false,
 builder: (ctx) => AlertDialog(
 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+
 title: const Row(
 children: [
 Icon(Icons.system_update, color: Color(0xFF1B4332)),
@@ -115,6 +120,7 @@ TextButton(
 onPressed: () => Navigator.pop(ctx),
 child: const Text('بعداً'),
 ),
+
 ElevatedButton(
 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
 onPressed: () {
@@ -132,6 +138,7 @@ child: const Text('دانلود نسخه جدید'),
 
 void _openUrl(String url) async {
 final uri = Uri.parse(url);
+
 if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
 if (mounted) {
 ScaffoldMessenger.of(context).showSnackBar(
@@ -149,6 +156,7 @@ body: Center(
 child: CircularProgressIndicator(color: Color(0xFF1B4332)),
 ),
 );
+
 }
 
 final pages = [
@@ -166,6 +174,7 @@ MoreMenuScreen(data: _data, openUrl: _openUrl),
 return Scaffold(
 appBar: AppBar(
 title: Column(
+
 children: [
 Text(
 _data?['header']?['title'] ?? 'هیئت مجاهدین حسینی',
@@ -183,6 +192,7 @@ elevation: 1,
 ),
 body: pages[_currentIndex],
 bottomNavigationBar: NavigationBar(
+
 selectedIndex: _currentIndex,
 onDestinationSelected: (i) => setState(() => _currentIndex = i),
 destinations: const [
@@ -192,6 +202,7 @@ NavigationDestination(icon: Icon(Icons.auto_stories_outlined), selectedIcon: Ico
 NavigationDestination(icon: Icon(Icons.touch_app_outlined), selectedIcon: Icon(Icons.touch_app), label: 'ذکرشمار'),
 NavigationDestination(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: 'خدمات'),
  ],
+
 ),
 );
 }
@@ -208,6 +219,7 @@ void _showPrayerRequestDialog(BuildContext context) {
 final controller = TextEditingController();
 showDialog(
 context: context,
+
 builder: (ctx) => AlertDialog(
 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
 title: const Row(
@@ -225,6 +237,7 @@ const Text(
 'نام بیمار، درگذشتگان یا نیت معنوی خود را بنویسید تا در پایان جلسه هفتگی قرائت و دعا شود:',
 style: TextStyle(fontSize: 12, height: 1.5),
 ),
+
 const SizedBox(height: 12),
 TextField(
 controller: controller,
@@ -241,7 +254,9 @@ border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: 
 actions: [
 TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('انصراف')),
 ElevatedButton(
-style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
+style: 
+
+ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B4332), foregroundColor: Colors.white),
 onPressed: () {
 Navigator.pop(ctx);
 ScaffoldMessenger.of(context).showSnackBar(
@@ -258,6 +273,7 @@ child: const Text('ثبت نیت'),
 @override
 Widget build(BuildContext context) {
 final pt = data?['prayer_times'] ?? {};
+
 final featured = data?['featured_martyr'] ?? {};
 final event = (data?['events'] as List? ?? []).isNotEmpty ? data!['events'][0] : null;
 
@@ -273,6 +289,7 @@ border: Border.all(color: const Color(0x1F1B4332)),
 ),
 child: Row(
 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
 children: [
 Row(
 children: [
@@ -290,6 +307,7 @@ const SizedBox(width: 8),
 prayerBadge('مغرب', pt['maghrib'] ?? '--:--'),
 ],
 ),
+
 ],
 ),
 ),
@@ -309,6 +327,7 @@ border: Border.all(color: const Color(0xFFC9A227), width: 1.2),
 child: Column(
 crossAxisAlignment: CrossAxisAlignment.start,
 children: [
+
 Row(
 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 children: [
@@ -322,6 +341,7 @@ Text(featured['date'] ?? '', style: const TextStyle(color: Colors.white70, fontS
 ),
 const SizedBox(height: 10),
 Row(
+
 children: [
 CircleAvatar(
 radius: 24,
@@ -338,6 +358,7 @@ child: Column(
 crossAxisAlignment: CrossAxisAlignment.start,
 children: [
 Text(featured['name'] ?? '', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+
 Text(featured['operation'] ?? '', style: const TextStyle(color: Colors.white70, fontSize: 11)),
 ],
 ),
@@ -345,12 +366,17 @@ Text(featured['operation'] ?? '', style: const TextStyle(color: Colors.white70, 
 ],
 ),
 const SizedBox(height: 8),
-Text('«{event['speaker']}', style: const TextStyle(fontSize: 12)),
+Text('«
+ 
+{event['speaker']}', style: const TextStyle(fontSize: 12)),
 const SizedBox(height: 4),
-Text('🏴 مداح: {event['date_time']}', style: const TextStyle(fontSize: 12)),
+Text('🏴 مداح: 
+ 
+{event['date_time']}', style: const TextStyle(fontSize: 12)),
 ],
 ),
 ),
+
 ),
 const SizedBox(height: 14),
 const Text('امکانات و خدمات هیئت', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
@@ -363,9 +389,11 @@ mainAxisSpacing: 10,
 crossAxisSpacing: 10,
 children: [
 _quickTile(Icons.favorite_border, 'التماس دعا', () => _showPrayerRequestDialog(context)),
-_quickTile(Icons.touch_app, 'صلوات‌شمار', () => onNavigate(3)),
+_quickTile(Icons.touch_app, 'صلواتشمار', () => onNavigate(3)),
 _quickTile(Icons.auto_stories, 'ادعیه هیئت', () => onNavigate(2)),
-_quickTile(Icons.military_tech, 'یادمان شهدا', () => onNavigate(1)),
+_quickTile(Icons.military_tech, 'یادمان شهدا', () => 
+
+onNavigate(1)),
 _quickTile(Icons.volunteer_activism, 'نذورات', () => onNavigate(4)),
 _quickTile(Icons.live_tv, 'پخش آنلاین', () => openUrl(data?['media']?['live_stream_url'] ?? 'https://aparat.com')),
 ],
@@ -378,7 +406,11 @@ Widget _prayerBadge(String name, String time) {
 return Container(
 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
 decoration: BoxDecoration(color: const Color(0xFFF0F4F2), borderRadius: BorderRadius.circular(6)),
-child: Text('time', style: const TextStyle(fontSize: 10, color: Color(0xFF1B4332), fontWeight: FontWeight.bold)),
+child: Text('
+ 
+time', style: const 
+
+TextStyle(fontSize: 10, color: Color(0xFF1B4332), fontWeight: FontWeight.bold)),
 );
 }
 
@@ -393,6 +425,7 @@ borderRadius: BorderRadius.all(Radius.circular(12)),
 boxShadow: [BoxShadow(color: Color(0x08000000), blurRadius: 4)],
 ),
 child: Column(
+
 mainAxisAlignment: MainAxisAlignment.center,
 children: [
 CircleAvatar(backgroundColor: const Color(0x141B4332), child: Icon(icon, color: const Color(0xFF1B4332), size: 20)),
@@ -425,6 +458,7 @@ title: Text(p['title'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold
 children: [
 Padding(
 padding: const EdgeInsets.all(16),
+
 child: Column(
 crossAxisAlignment: CrossAxisAlignment.stretch,
 children: [
@@ -441,6 +475,7 @@ const SizedBox(height: 12),
 Text(
 p['farsi'] ?? '',
 textAlign: TextAlign.justify,
+
 style: TextStyle(fontSize: 13, height: 1.6, color: Colors.grey.shade800),
 ),
 ],
@@ -474,6 +509,7 @@ _loadSalawat();
 Future<void> _loadSalawat() async {
 final prefs = await SharedPreferences.getInstance();
 setState(() => _count = prefs.getInt('user_salawat_count') ?? 0);
+
 }
 
 Future<void> _increment() async {
@@ -491,7 +527,9 @@ await prefs.setInt('user_salawat_count', 0);
 
 @override
 Widget build(BuildContext context) {
-final target = widget.pledgeData['target'] ?? 14000;
+final target = widget.pledgeData['target'] ?? 
+
+14000;
 final base = widget.pledgeData['base_count'] ?? 0;
 final total = base + _count;
 final progress = (total / target).clamp(0.0, 1.0);
@@ -508,13 +546,16 @@ child: Column(
 children: [
 Text(
 widget.pledgeData['title'] ?? 'نذر جمعی صلوات شهدای امامه',
+
 textAlign: TextAlign.center,
 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
 ),
 const SizedBox(height: 14),
 LinearProgressIndicator(value: progress, minHeight: 8, color: const Color(0xFFC9A227), backgroundColor: Colors.white24),
 const SizedBox(height: 8),
-Text('target', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+Text('
+ 
+target', style: const TextStyle(color: Colors.white70, fontSize: 12)),
 ],
 ),
 ),
@@ -524,6 +565,7 @@ Center(
 child: InkWell(
 onTap: _increment,
 borderRadius: BorderRadius.circular(120),
+
 child: Container(
 width: 200,
 height: 200,
@@ -537,7 +579,9 @@ mainAxisAlignment: MainAxisAlignment.center,
 children: [
 const Text('اللهم صل علی محمد و آل محمد', textAlign: TextAlign.center, style: TextStyle(color: Color(0xFFC9A227), fontSize: 11)),
 const SizedBox(height: 8),
-Text('$`_count', style: const TextStyle(color: Colors.white, fontSize: 44, fontWeight: FontWeight.bold)),
+Text('$`_count', style: const TextStyle(color: Colors.white, fontSize: 44, fontWeight: 
+
+FontWeight.bold)),
 const SizedBox(height: 4),
 const Text('لمس کنید', style: TextStyle(color: Colors.white60, fontSize: 11)),
  ],
@@ -554,6 +598,7 @@ label: const Text('صفر کردن شمارش شخصی', style: TextStyle(color:
 ),
 )
 ],
+
 );
 }
 }
@@ -571,6 +616,7 @@ String _q = '';
 
 @override
 Widget build(BuildContext context) {
+
 final list = widget.martyrs.where((m) => (m['name'] ?? '').toString().contains(_q)).toList();
 return Column(
 children: [
@@ -587,6 +633,7 @@ border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: 
 ),
 ),
 ),
+
 Expanded(
 child: ListView.builder(
 padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -602,6 +649,7 @@ backgroundColor: Color(0x1A1B4332),
 child: Icon(Icons.person, color: Color(0xFF1B4332)),
 ),
 title: Text(m['name'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+
 subtitle: Text('شهادت: ${m['martyrdom_date']} | ${m['operation']}', style: const TextStyle(fontSize: 11)),
 ),
 );
@@ -619,6 +667,7 @@ final Function(String) openUrl;
 
 const MoreMenuScreen({super.key, required this.data, required this.openUrl});
 
+
 @override
 Widget build(BuildContext context) {
 final don = data?['donations'] ?? {};
@@ -634,8 +683,9 @@ title: const Text('نذورات و شفافیت مالی', style: TextStyle(font
 children: [
 ListTile(
 title: Text(don['card_number'] ?? ''),
-subtitle: Text('به‌نام: `${don['account_owner']}'),
+subtitle: Text('بهنام: `${don['account_owner']}'),
 trailing: IconButton(
+
 icon: const Icon(Icons.copy),
 onPressed: () {
 Clipboard.setData(ClipboardData(text: don['card_number'] ?? ''));
@@ -651,7 +701,9 @@ child: Text(don['financial_report']?['last_expense'] ?? '', style: const TextSty
 ),
 const Divider(),
 ListTile(
-leading: const Icon(Icons.location_on, color: Color(0xFF1B4332)),
+leading: const Icon(Icons.location_on, color: 
+
+Color(0xFF1B4332)),
 title: const Text('آدرس حسینیه'),
 subtitle: Text(con['address'] ?? ''),
 trailing: IconButton(icon: const Icon(Icons.navigation), onPressed: () => openUrl(con['map_url'] ?? '')),
@@ -666,7 +718,9 @@ const SizedBox(height: 16),
 Row(
 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 children: [
-IconButton(icon: const Icon(Icons.send, color: Colors.blue), onPressed: () => openUrl(con['telegram'] ?? '')),
+IconButton(icon: const Icon(Icons.send, color: 
+
+Colors.blue), onPressed: () => openUrl(con['telegram'] ?? '')),
 IconButton(icon: const Icon(Icons.chat, color: Colors.orange), onPressed: () => openUrl(con['eitaa'] ?? '')),
 IconButton(icon: const Icon(Icons.chat_bubble, color: Colors.green), onPressed: () => openUrl(con['bale'] ?? '')),
 ],
