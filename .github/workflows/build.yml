@@ -1,3 +1,5 @@
+name: Build APK
+
 on:
   push:
     branches: [ main, master ]
@@ -23,17 +25,22 @@ jobs:
           flutter-version: '3.19.6'
           channel: 'stable'
 
-      - name: Get Dependencies
-        run: flutter pub get
-
-      - name: Generate Android Platform Safely
-        run: flutter create . --platforms=android --org com.shohadaamameh.heyat
-
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Build in Clean Folder
+        run: |
+          # ساخت پروژه در یک پوشه استاندارد بدون خط تیره
+          flutter create heyat_app --org com.shohadaamameh.heyat
+          
+          # انتقال کدهای شما به پوشه جدید
+          cp -r lib/* heyat_app/lib/
+          cp pubspec.yaml heyat_app/pubspec.yaml
+          
+          # ورود به پوشه و ساخت نهایی
+          cd heyat_app
+          flutter pub get
+          flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Heyat-App-Release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: heyat_app/build/app/outputs/flutter-apk/app-release.apk
