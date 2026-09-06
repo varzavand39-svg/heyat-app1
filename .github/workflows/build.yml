@@ -1,43 +1,48 @@
 name: Build Android APK
 
 on:
-  push:
-    branches: [ main, master ]
-  workflow_dispatch:
+push:
+branches: [ main, master ]
+workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+steps:
+- name: Checkout Code
+uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+- name: Set up Java
+uses: actions/setup-java@v4
+with:
+distribution: 'temurin'
+java-version: '17'
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
+- name: Set up Flutter
+uses: subosito/flutter-action@v2
+with:
+channel: 'stable'
 
-      - name: Accept Android Licenses
-        run: yes "y" | flutter doctor --android-licenses || true
+- name: Accept Android Licenses
+run: yes "y" | flutter doctor --android-licenses || true
 
-      - name: Get Dependencies
-        run: flutter pub get
+- name: Build APK in Clean Environment
+run: |
+# ساخت یک پروژه فلاتر کاملاً تمیز در پوشه موقت
+flutter create app_build --org com.shohadaamameh.heyat --project-name heyat_app
 
-      - name: Generate Android Platform
-        run: flutter create . --platforms=android --org com.shohadaamameh.heyat
+# انتقال فایل‌های اصلی شما به پروژه تمیز
+cp lib/main.dart app_build/lib/main.dart
+cp pubspec.yaml app_build/pubspec.yaml
 
-      - name: Build APK
-        run: flutter build apk --release
+# ورود به پوشه و کامپایل نهایی
+cd app_build
+flutter pub get
+flutter build apk --release
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Heyat-App-Release
-          path: build/app/outputs/flutter-apk/app-release.apk
+- name: Upload APK Artifact
+uses: actions/upload-artifact@v4
+with:
+name: Heyat-App-Release
+path: app_build/build/app/outputs/flutter-apk/app-release.apk
