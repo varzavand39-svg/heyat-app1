@@ -25,22 +25,20 @@ jobs:
           flutter-version: '3.19.6'
           channel: 'stable'
 
-      - name: Build Project
+      - name: 1. Create Flutter Project Structure
         run: |
-          set -e
-          echo "=== 1. Creating Flutter Project ==="
           flutter create project_dir --org com.shohadaamameh.heyat --project-name heyat_app
-          
-          echo "=== 2. Copying User Files ==="
           cp pubspec.yaml project_dir/pubspec.yaml
           cp lib/main.dart project_dir/lib/main.dart
-          
+
+      - name: 2. Install Dependencies
+        run: |
           cd project_dir
-          
-          echo "=== 3. Getting Dependencies ==="
           flutter pub get
-          
-          echo "=== 4. Building APK ==="
+
+      - name: 3. Build Release APK
+        run: |
+          cd project_dir
           flutter build apk --release
 
       - name: Upload APK Artifact
