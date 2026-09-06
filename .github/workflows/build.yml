@@ -30,6 +30,9 @@ jobs:
       - name: Get Dependencies
         run: flutter pub get
 
+      - name: Generate Android Platform
+        run: flutter create . --platforms=android --org com.shohadaamameh.heyat
+
       - name: Build APK
         run: flutter build apk --release
 
