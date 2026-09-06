@@ -27,14 +27,36 @@ jobs:
 
       - name: Build in Clean Folder
         run: |
-          # ساخت پروژه در یک پوشه استاندارد بدون خط تیره
+          # ۱. ساخت پروژه فلاتر تمیز
           flutter create heyat_app --org com.shohadaamameh.heyat
-          
-          # انتقال کدهای شما به پوشه جدید
-          cp -r lib/* heyat_app/lib/
-          cp pubspec.yaml heyat_app/pubspec.yaml
-          
-          # ورود به پوشه و ساخت نهایی
+
+          # ۲. ساخت خودکار فایل تنظیمات با تمام پکیج‌های مورد نیاز کد شما
+          cat << 'EOF' > heyat_app/pubspec.yaml
+          name: heyat_app
+          description: هیئت مجاهدین حسینی شهدای امامه
+          publish_to: 'none'
+          version: 1.0.0+1
+
+          environment:
+            sdk: '>=3.0.0 <4.0.0'
+
+          dependencies:
+            flutter:
+              sdk: flutter
+            flutter_localizations:
+              sdk: flutter
+            http: ^1.2.1
+            shared_preferences: ^2.2.3
+            url_launcher: ^6.3.0
+
+          flutter:
+            uses-material-design: true
+          EOF
+
+          # ۳. انتقال فایل main.dart شما به پوشه پروژه
+          cp lib/main.dart heyat_app/lib/main.dart
+
+          # ۴. دریافت پکیج‌ها و کامپایل نهایی
           cd heyat_app
           flutter pub get
           flutter build apk --release
