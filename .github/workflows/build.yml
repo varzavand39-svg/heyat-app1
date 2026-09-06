@@ -24,6 +24,19 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Generate Android Scaffold
+        run: |
+          # ذخیره موقت فایل‌های اصلی شما
+          cp lib/main.dart /tmp/main.dart
+          cp pubspec.yaml /tmp/pubspec.yaml
+          
+          # ساخت ساختار سیستمی اندروید در مخزن
+          flutter create . --platforms=android --org com.shohadaamameh.heyat --project-name heyat_app --force
+          
+          # بازگردانی فایل‌های اصلی هیئت
+          cp /tmp/main.dart lib/main.dart
+          cp /tmp/pubspec.yaml pubspec.yaml
+
       - name: Install Dependencies
         run: flutter pub get
 
