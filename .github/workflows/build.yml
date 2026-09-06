@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Android APK
 
 on:
   push:
@@ -22,29 +22,29 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.19.6'
           channel: 'stable'
 
-      - name: Generate Android Scaffold
+      - name: Build Project
         run: |
-          # ذخیره موقت فایل‌های اصلی شما
-          cp lib/main.dart /tmp/main.dart
-          cp pubspec.yaml /tmp/pubspec.yaml
+          set -e
+          echo "=== 1. Creating Flutter Project ==="
+          flutter create project_dir --org com.shohadaamameh.heyat --project-name heyat_app
           
-          # ساخت ساختار سیستمی اندروید در مخزن
-          flutter create . --platforms=android --org com.shohadaamameh.heyat --project-name heyat_app --force
+          echo "=== 2. Copying User Files ==="
+          cp pubspec.yaml project_dir/pubspec.yaml
+          cp lib/main.dart project_dir/lib/main.dart
           
-          # بازگردانی فایل‌های اصلی هیئت
-          cp /tmp/main.dart lib/main.dart
-          cp /tmp/pubspec.yaml pubspec.yaml
+          cd project_dir
+          
+          echo "=== 3. Getting Dependencies ==="
+          flutter pub get
+          
+          echo "=== 4. Building APK ==="
+          flutter build apk --release
 
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Build Release APK
-        run: flutter build apk --release
-
-      - name: Upload Artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Heyat-App-Release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: project_dir/build/app/outputs/flutter-apk/app-release.apk
